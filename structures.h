@@ -24,5 +24,9 @@ void insertInTrie(Trie trie, unsigned char *w);
 
 int isInTrie(Trie trie, unsigned char *w);
 
+void initialiser(int ** matrice , int max_node);
+
+void insertInTrie(Trie trie , unsigned char *w);
+
 #endif
 //memset
