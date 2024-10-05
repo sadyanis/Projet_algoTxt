@@ -4,17 +4,20 @@
 #include "structures.h"
 
  int main(int argc, char const *argv[]){
+    //test
     Trie tr =  createTrie(6);
+    unsigned char *w = "abaa" ;
+    unsigned char *w1 = "abab";
+    unsigned char *w2 = "aba";
    
-    printf("%d \n",tr->maxNode);
-    printf("%d",tr->nextNode);
-   
-    for (int i = 0; i < 6; i++)
-    {
-        printf("%d",tr->finite[i]);
-        printf("%d",tr->transition[0][i]);
-        /* code */
-    }
+    insertInTrie(tr,w) ;  
+    insertInTrie(tr,w1) ;
+     int result = isInTrie(tr,w2);
+    printf("%d",result);
+
+
+    
+    
     
 
 
@@ -30,7 +33,7 @@ Trie createTrie(int maxNode){
     monTrie->transition = malloc(maxNode * sizeof(int *));
 
     monTrie->finite = malloc(maxNode * sizeof(int));
-    //initialisation du tableau
+    //initialisation du tableau par des 1
     memset(monTrie->finite,1,maxNode * sizeof(int));
     // initialisation de la matrice
      initialiser(monTrie->transition,monTrie->maxNode);
@@ -76,5 +79,26 @@ void initialiser(int ** matrice , int max_node){
     
 }
 
-// fonction pour inserer un mot
+// fonction pour savoir si un mot est dans un trie
+int isInTrie(Trie trie, unsigned char *w){
+    int N = strlen((char *)w);
+    int i = 0;
+    int current_node = 0;
+    while (i < N)
+    {
+        if(trie->transition[current_node][w[i]] == -1){
+            return 1;
+        }else
+        current_node = trie->transition[current_node][w[i]];
+        i++;
+        
+        /* code */
+
+    }
+    if(trie->finite[current_node]== 0){
+    return 1;
+    }
+    return 0;
+    
+}
 
