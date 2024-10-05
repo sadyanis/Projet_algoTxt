@@ -1,14 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include<limits.h>
 #include "structures.h"
 
  int main(int argc, char const *argv[]){
     //test
     Trie tr =  createTrie(6);
-    unsigned char *w = "abaa" ;
-    unsigned char *w1 = "abab";
-    unsigned char *w2 = "aba";
+    unsigned char *w = (unsigned char *)"abaa" ;
+    unsigned char *w1 = (unsigned char *)"abab";
+    unsigned char *w2 = (unsigned char *)"aba";
    
     insertInTrie(tr,w) ;  
     insertInTrie(tr,w1) ;
@@ -16,9 +17,6 @@
     printf("%d",result);
 
 
-    
-    
-    
 
 
     return 0;
