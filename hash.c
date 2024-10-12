@@ -119,7 +119,7 @@ unsigned int hash_function(char c, int num) {
 }
 
 // fonction pour savoir si un mot appartien au trie ou pas
-int isInTrie(List trie, unsigned char *w){
+/* int isInTrie(List trie, unsigned char *w){
     int N = strlen((char *)w);
     int i = 0;
     int current_node = 0;
@@ -153,23 +153,7 @@ int isInTrie(List trie, unsigned char *w){
 
     }
     return 0;
-}
-/*
-int isTransitionValid(List transition, int currentNode, unsigned char letter) {
-    return transition->startNode == currentNode && transition->letter == letter;
-}
-
-List findTransition(List transitions, int currentNode, unsigned char letter) {
-    while (transitions != NULL) {
-        if (isTransitionValid(transitions, currentNode, letter)) {
-            return transitions; // Transition trouvée
-        }
-        transitions = transitions->next;
-    }
-    return NULL; // Aucune transition trouvée
-}
-
-
+}*/
 int isInTrie(List trie, unsigned char *word) {
     int wordLength = strlen((char *)word);
     int currentNode = 0;
@@ -190,5 +174,21 @@ int isInTrie(List trie, unsigned char *word) {
     return (currentNode == -1) ? 1 : 0; // Mot trouvé ou non
 }
 
+int isTransitionValid(List transition, int currentNode, unsigned char letter) {
+    return transition->startNode == currentNode && transition->letter == letter;
+}
 
-*/
+List findTransition(List transitions, int currentNode, unsigned char letter) {
+    while (transitions != NULL) {
+        if (isTransitionValid(transitions, currentNode, letter)) {
+            return transitions; // Transition trouvée
+        }
+        transitions = transitions->next;
+    }
+    return NULL; // Aucune transition trouvée
+}
+
+
+
+
+
