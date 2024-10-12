@@ -12,11 +12,7 @@
 
 
 int main() {
-    // char c = 'c';
-    // int num = 4;
-    
-    // unsigned int hash_value = hash_function(c, num);
-    // printf("Hash value: %u\n", hash_value);
+
     unsigned char *w1  = "hello";
     unsigned char *w2  = "hello";
     List tr = createTrie(TABLE_SIZE);
@@ -177,4 +173,41 @@ if(trie[hashcode].startNode== current_node && trie[hashcode].letter == w[i] ) {
             current_node = lastNode;
             lastNode+=1;
         }
+
+int isTransitionValid(List transition, int currentNode, unsigned char letter) {
+    return transition->startNode == currentNode && transition->letter == letter;
+}
+
+List findTransition(List transitions, int currentNode, unsigned char letter) {
+    while (transitions != NULL) {
+        if (isTransitionValid(transitions, currentNode, letter)) {
+            return transitions; // Transition trouvée
+        }
+        transitions = transitions->next;
+    }
+    return NULL; // Aucune transition trouvée
+}
+
+
+int isInTrie(List trie, unsigned char *word) {
+    int wordLength = strlen((char *)word);
+    int currentNode = 0;
+
+    for (int currentIndex = 0; currentIndex < wordLength; currentIndex++) {
+        int hashCode = hash_function(word[currentIndex], currentNode);
+        List currentTransition = findTransition(&trie[hashCode], currentNode, word[currentIndex]);
+
+        // Si aucune transition trouvée, mot non trouvé
+        if (currentTransition == NULL) {
+            return 0; // Mot non trouvé
+        }
+
+        currentNode = currentTransition->targetNode; // Mettre à jour le nœud courant
+    }
+
+    // Vérifier si le nœud courant est terminal
+    return (currentNode == -1) ? 1 : 0; // Mot trouvé ou non
+}
+
+
 */
