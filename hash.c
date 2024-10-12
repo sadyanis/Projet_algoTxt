@@ -155,25 +155,6 @@ int isInTrie(List trie, unsigned char *w){
     return 0;
 }
 /*
-if(trie[hashcode].startNode== current_node && trie[hashcode].letter == w[i] ) {
-            // a completer
-            current_node = trie[hashcode].targetNode;
-
-        }else{
-            List new = malloc(sizeof(struct _list));
-            if (new == NULL) {
-                perror("malloc fault");
-                exit(EXIT_FAILURE); // Gérer l'erreur d'allocation mémoire
-            }
-            new->startNode = current_node;
-            new->targetNode = lastNode;
-            new->letter = w[i];
-            new->next = NULL;
-            // ajouter une fonction d'insertion dans la fin 
-            current_node = lastNode;
-            lastNode+=1;
-        }
-
 int isTransitionValid(List transition, int currentNode, unsigned char letter) {
     return transition->startNode == currentNode && transition->letter == letter;
 }

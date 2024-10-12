@@ -24,6 +24,10 @@ int isInTrie(List trie, unsigned char *w);
 
 List trie_suff(unsigned char *w,int maxNode);
 
+List findTransition(List transitions, int currentNode, unsigned char letter);
+
+int isTransitionValid(List transition, int currentNode, unsigned char letter);
+
 
 
 
