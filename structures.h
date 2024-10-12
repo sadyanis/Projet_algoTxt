@@ -9,16 +9,17 @@ struct _trie {
 };
 // struct de la table de hashage
 
-struct _list{
+/*struct _list{
     int startNode,targetNode;
     unsigned char letter;
     struct _list *next;
 
 } ;
-
+typedef struct _list *List;*/
 typedef struct _trie *Trie;
 
 Trie createTrie(int maxNode);
+
 
 void insertInTrie(Trie trie, unsigned char *w);
 
@@ -26,9 +27,11 @@ int isInTrie(Trie trie, unsigned char *w);
 
 void initialiser(int ** matrice , int max_node);
 
-void insertInTrie(Trie trie , unsigned char *w);
+Trie trie_pref(unsigned char *w,int maxNode);
 
 int isInTrie(Trie trie, unsigned char *w);
+
+Trie trie_suff(unsigned char *w,int maxNode);
 
 #endif
 //memset

@@ -6,6 +6,7 @@ struct _list{
     struct _list *next;
 
 } ;
+
 typedef struct _list *List;
 
 List createTrie(int maxNode);
