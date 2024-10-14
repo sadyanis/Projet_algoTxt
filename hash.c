@@ -15,32 +15,33 @@ int main() {
 
     unsigned char *w1  = "hello";
     unsigned char *w2  = "hello";
-    List tr = createTrie(TABLE_SIZE);
-    insertInTrie(tr,w2);
-    printf("\n here: %d",isInTrie(tr,w1));
+    Trie tr = createTrie(8);
+    printf("%d",tr->nextNode);
+    
     
 
     return 0;
 }
 //
-List createTrie(int maxNode){
-    List tr = malloc((maxNode+1) * sizeof(struct _list));
-    if(tr == NULL){
-        perror("malloc fault");
-        exit(EXIT_FAILURE);
-    }
-    for (int i = 0; i < maxNode; i++)
-    {
-        //initialisation
-        tr[i].startNode = -1 ;
-    }
-    tr[TABLE_SIZE].targetNode = 1;
+Trie createTrie(int maxNode){
+    Trie tr = malloc(sizeof(struct _trie));
+   if (tr == NULL)
+   {
+    perror("Error allocation");
+    exit(EXIT_FAILURE);
+   }
+   tr->maxNode = maxNode;
+   tr->nextNode = 1;
+   tr->finite =(char*) malloc(maxNode * sizeof(char));
+   //initialisation du tableau par des 0
+    memset(tr->finite,0,maxNode * sizeof(char));
+   initialiser(tr->transition, maxNode);
     
     return tr;
     
 }
 
-void insertInTrie(List trie, unsigned char *w){
+/* void insertInTrie(Trie trie, unsigned char *w){
     int n = strlen((char *)w);
     int current_node = 0; // ne node courant
     int hashcode ; // va contenir le resultat de la fonction de hachage
@@ -58,7 +59,7 @@ void insertInTrie(List trie, unsigned char *w){
             {
                 
                 trie[hashcode].targetNode = -1 ; // pour determiner si cet etat est terminal
-                /* code */
+                
             }else{
                 trie[hashcode].targetNode = lastNode ;
                 current_node = lastNode;
@@ -97,11 +98,11 @@ void insertInTrie(List trie, unsigned char *w){
             }
         }
         trie[TABLE_SIZE].targetNode = lastNode;
-        /* code */
+        
     }
     
 
-}
+}*/
 
 unsigned int hash_function(char c, int num) {
     unsigned int hash = 0;
@@ -154,7 +155,7 @@ unsigned int hash_function(char c, int num) {
     }
     return 0;
 }*/
-int isInTrie(List trie, unsigned char *word) {
+/*int isInTrie(List trie, unsigned char *word) {
     int wordLength = strlen((char *)word);
     int currentNode = 0;
 
@@ -172,7 +173,7 @@ int isInTrie(List trie, unsigned char *word) {
 
     // Vérifier si le nœud courant est terminal
     return (currentNode == -1) ? 1 : 0; // Mot trouvé ou non
-}
+}*/
 
 int isTransitionValid(List transition, int currentNode, unsigned char letter) {
     return transition->startNode == currentNode && transition->letter == letter;
@@ -186,6 +187,21 @@ List findTransition(List transitions, int currentNode, unsigned char letter) {
         transitions = transitions->next;
     }
     return NULL; // Aucune transition trouvée
+}
+
+void initialiser( struct _list ** matriceHach , int tableSize){
+    matriceHach = malloc(tableSize * sizeof(List));
+    if (matriceHach == NULL)
+    {
+        perror("allocation fault");
+        exit(EXIT_FAILURE);
+    }
+    for (int i = 0; i < tableSize; i++)
+    {
+        matriceHach[i]== NULL;
+    }
+    
+    
 }
 
 

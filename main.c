@@ -27,11 +27,11 @@ Trie createTrie(int maxNode){
     monTrie->nextNode = 1;
     monTrie->transition = malloc(maxNode * sizeof(int *));
 
-    monTrie->finite = malloc(maxNode * sizeof(int));
+    monTrie->finite = malloc(maxNode * sizeof(char));
     //initialisation du tableau par des 0
-    memset(monTrie->finite,0,maxNode * sizeof(int));
+    memset(monTrie->finite,0,maxNode * sizeof(char));
     // initialisation de la matrice
-     initialiser(monTrie->transition,monTrie->maxNode);
+     initialiser(monTrie->transition,maxNode);
     //controle d'erreur
 
     return monTrie;
