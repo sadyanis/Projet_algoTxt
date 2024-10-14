@@ -13,10 +13,12 @@
 
 int main() {
 
-    unsigned char *w1  = "hello";
-    unsigned char *w2  = "hello";
+    unsigned char *w = (unsigned char *)"ab" ;
     Trie tr = createTrie(8);
+    insertInTrie(tr,w);
     printf("%d",tr->nextNode);
+
+
     
     
 
@@ -35,9 +37,44 @@ Trie createTrie(int maxNode){
    tr->finite =(char*) malloc(maxNode * sizeof(char));
    //initialisation du tableau par des 0
     memset(tr->finite,0,maxNode * sizeof(char));
-   initialiser(tr->transition, maxNode);
+   // initialisation de la table de hachage
+   tr->transition = malloc(TABLE_SIZE * sizeof(List));
+    if (tr->transition == NULL) {
+        perror("Error allocation");
+        exit(EXIT_FAILURE);
+    }
+
+    // Initialiser chaque élément de `transition` à NULL
+    for (int i = 0; i < maxNode; i++) {
+        tr->transition[i] = NULL;
+    }
     
     return tr;
+    
+}
+
+void insertInTrie(Trie trie, unsigned char *w){
+    int wordLength = strlen((char *)w);
+    int currentNode = 0;
+    int hashcode;
+    for (int i = 0; i < wordLength; i++)
+    {
+        hashcode = (hash_function(w[i],currentNode));
+        if (trie->transition[hashcode]==NULL)
+        {
+            List newTrans = malloc(sizeof(struct _list));
+            newTrans->startNode = currentNode;
+            newTrans->letter = w[i];
+            newTrans->targetNode = trie->nextNode;
+            newTrans->next = NULL;
+            currentNode = trie->nextNode;
+            trie->nextNode = trie->nextNode + 1;
+            trie->transition[hashcode] = newTrans;
+        }
+        
+    }
+    trie->finite[currentNode] = 1;
+
     
 }
 
@@ -189,20 +226,6 @@ List findTransition(List transitions, int currentNode, unsigned char letter) {
     return NULL; // Aucune transition trouvée
 }
 
-void initialiser( struct _list ** matriceHach , int tableSize){
-    matriceHach = malloc(tableSize * sizeof(List));
-    if (matriceHach == NULL)
-    {
-        perror("allocation fault");
-        exit(EXIT_FAILURE);
-    }
-    for (int i = 0; i < tableSize; i++)
-    {
-        matriceHach[i]== NULL;
-    }
-    
-    
-}
 
 
 

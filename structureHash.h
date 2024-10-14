@@ -34,8 +34,6 @@ List findTransition(List transitions, int currentNode, unsigned char letter);
 
 int isTransitionValid(List transition, int currentNode, unsigned char letter);
 
-void initialiser( List ** matriceHach , int tableSize);
-
 
 
 #endif
