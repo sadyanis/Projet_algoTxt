@@ -5,7 +5,8 @@
 #include "structureHash.h"
 
 
-
+#define TRUE 0
+#define FALSE 1
 #define TABLE_SIZE 101  // Un nombre premier proche du nombre d'éléments prévus a definir plutard
 
 
@@ -62,90 +63,82 @@ void insertInTrie(Trie trie, unsigned char *w){
     for (int i = 0; i < wordLength; i++)
     {
         hashcode = (hash_function(w[i],currentNode));
-        if (trie->transition[hashcode]==NULL)
+        List point = findExistingTransition(trie,hashcode,currentNode,w[i]);
+        if (point==NULL)
         {
-            List newTrans = malloc(sizeof(struct _list));
-            newTrans->startNode = currentNode;
-            newTrans->letter = w[i];
-            newTrans->targetNode = trie->nextNode;
-            newTrans->next = NULL;
+            List newTrans = createNewTransition(currentNode,w[i],trie->nextNode);
+            newTrans->next = trie->transition[hashcode]; // inserer en tete
+             trie->transition[hashcode] = newTrans;
             currentNode = trie->nextNode;
-            trie->nextNode = trie->nextNode + 1;
-            trie->transition[hashcode] = newTrans;
+            trie->nextNode += 1;
+           
         }else{
-            List point = trie->transition[hashcode];
-            while (point != NULL)
-            {
-                if (point->startNode == currentNode && point->letter == w[i])
-                {
-                    currentNode = point->targetNode;
-                    break;
-                }
-                point=point->next;
-                /* code */
-            }
-            // si y'a pas de transition avec la meme lettre 
-            if (point == NULL)
-            {
-                 List newTrans = malloc(sizeof(struct _list));
-            newTrans->startNode = currentNode;
-            newTrans->letter = w[i];
-            newTrans->targetNode = trie->nextNode;
-            currentNode = trie->nextNode;
-            trie->nextNode = trie->nextNode + 1;
-            // inserer au debut
-            newTrans->next = trie->transition[hashcode];
-            trie->transition[hashcode] = newTrans;
-                //creation d'une transition
-                // fonction pour inserer en debut
-            }
-            
-            
+            currentNode = point->targetNode;
         }
-
         
     }
-    trie->finite[currentNode] = 1;
+    trie->finite[currentNode] = 1;    
+}
 
+int isInTrie(Trie trie, unsigned char *w) {
+    int wordLength = strlen((char *)w);
+    int currentNode = 0;
+    int hashcode;
+
+    for (int i = 0; i < wordLength; i++) {
+        hashcode = hash_function(w[i], currentNode);
+        
+        List point = findExistingTransition(trie, hashcode, currentNode, w[i]);
+        
+        if (point == NULL) {
+            return FALSE; // Mot non trouvé
+        }
+        
+        currentNode = point->targetNode;
+    }
+
+    return (trie->finite[currentNode] == 1) ? TRUE : FALSE;
+}
+
+Trie trie_pref(unsigned char *w){
+   
+     int maxNode  = strlen((char *)w) + 1;//taille du mot +1
+    Trie trie = createTrie(maxNode);
+    insertInTrie(trie,w);
+    for (int i = 0; i < maxNode; i++)
+    {
+        trie->finite[i]=1;
+        
+    }
+    return trie;
     
 }
 
-int isInTrie(Trie trie, unsigned char *w){
-int wordLength = strlen((char *)w);
-    int i = 0;
-    int current_node = 0;
-    int hashcode;
-    while(i<wordLength){
-        hashcode = hash_function(w[i],current_node);
-        if (trie->transition[hashcode]== NULL)
-        {
-            return 1; // 1 -> false & 0 -> true
-            /* code */
-        }else{
-             List point = trie->transition[hashcode];
-            while (point != NULL)
-            {
-                if (point->startNode == current_node && point->letter == w[i])
-                {
-                    current_node = point->targetNode;
-                    break;
-                }
-                point=point->next;
-                /* code */
-            }
-        }
-        i++;
-        
-    }
-    if (trie->finite[current_node]==0)
+Trie trie_suff(unsigned char *w){
+    int maxNode  = strlen((char *)w) + 1;//taille du mot +1
+    Trie trie = createTrie(maxNode);
+    for (int i = 0; i < maxNode-1; i++)
     {
-        return 1;
+        insertInTrie(trie,w+1);
         /* code */
     }
-    return 0 ;
-
+    return trie;
 }
 
+Trie trie_facteur(unsigned char *w){
+    int maxNode  = strlen((char *)w) + 1;//taille du mot +1
+    Trie trie = createTrie(maxNode);
+     for (int i = 0; i < maxNode-1; i++) {
+        // Insérer chaque suffixe qui commence à i
+        for (int j = i + 1; j <= maxNode-1; j++) {
+            // Insérer tous les préfixes de ce suffixe
+            unsigned char *factor = strndup((char *)(w + i), j - i);
+            insertInTrie(trie, factor);
+            free(factor);
+        }
+    }
+    return trie;
+}
 
 
 unsigned int hash_function(char c, int num) {
@@ -161,21 +154,10 @@ unsigned int hash_function(char c, int num) {
     hash = hash % TABLE_SIZE;
     
     return hash;
-}
+ }
 
-int isTransitionValid(List transition, int currentNode, unsigned char letter) {
-    return transition->startNode == currentNode && transition->letter == letter;
-}
 
-List findTransition(List transitions, int currentNode, unsigned char letter) {
-    while (transitions != NULL) {
-        if (isTransitionValid(transitions, currentNode, letter)) {
-            return transitions; // Transition trouvée
-        }
-        transitions = transitions->next;
-    }
-    return NULL; // Aucune transition trouvée
-}
+
 
 // fonction pour creer une nouvelle transition
 
@@ -188,6 +170,19 @@ List createNewTransition(int startNode, unsigned char letter, int targetNode) {
     return newTrans;
 }
 
+List findExistingTransition(Trie trie,int hachCode, int currentNode,char letter){
+    List pointeur = trie->transition[hachCode];
+    while (pointeur != NULL)
+    {
+        if (pointeur->startNode == currentNode && pointeur->letter == letter)
+        {
+            return pointeur;
+        }
+        pointeur =  pointeur->next;
+        
+    }
+    return NULL;
+}
 
 
 

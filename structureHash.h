@@ -23,17 +23,14 @@ unsigned int hash_function(char c, int num);
 
 void insertInTrie(Trie trie, unsigned char *w);
 
-Trie trie_pref(unsigned char *w,int maxNode);
+Trie trie_pref(unsigned char *w);
 
 int isInTrie(Trie trie, unsigned char *w);
 
 
-Trie trie_suff(unsigned char *w,int maxNode);
+Trie trie_suff(unsigned char *w);
 
-List findTransition(List transitions, int currentNode, unsigned char letter);
+List createNewTransition(int startNode, unsigned char letter, int targetNode);
 
-int isTransitionValid(List transition, int currentNode, unsigned char letter);
-
-
-
+List findExistingTransition(Trie trie,int hachCode, int currentNode,char letter);
 #endif

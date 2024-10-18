@@ -128,4 +128,18 @@ Trie trie_suff(unsigned char *w){
     return tr;
 }
 
+Trie trie_facteur(unsigned char *w){
+    int maxNode  = strlen((char *)w) + 1;//taille du mot +1
+    Trie trie = createTrie(maxNode);
+     for (int i = 0; i < maxNode-1; i++) {
+        // Insérer chaque suffixe qui commence à i
+        for (int j = i + 1; j <= maxNode-1; j++) {
+            // Insérer tous les préfixes de ce suffixe
+            unsigned char *factor = strndup((char *)(w + i), j - i);
+            insertInTrie(trie, factor);
+            free(factor);
+        }
+    }
+    return trie;
+}
 

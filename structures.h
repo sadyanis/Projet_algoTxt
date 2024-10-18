@@ -27,11 +27,11 @@ int isInTrie(Trie trie, unsigned char *w);
 
 void initialiser(int ** matrice , int max_node);
 
-Trie trie_pref(unsigned char *w,int maxNode);
+Trie trie_pref(unsigned char *w);
 
 int isInTrie(Trie trie, unsigned char *w);
 
-Trie trie_suff(unsigned char *w,int maxNode);
+Trie trie_suff(unsigned char *w);
 
 #endif
 //memset
