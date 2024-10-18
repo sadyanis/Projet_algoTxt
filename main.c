@@ -13,7 +13,7 @@
    
     insertInTrie(tr,w) ;  
     insertInTrie(tr,w1) ;
-     int result = isInTrie(tr,w);
+     int result = isInTrie(tr,w2);
     printf("%d",result);
 
     return 0;
@@ -55,7 +55,9 @@ void insertInTrie(Trie trie, unsigned char *w){
             current_node = trie->transition[current_node][w[i]];
 
         }
-        trie->finite[current_node] = 1; //est un terminal
+        if(i == n-1){
+        trie->finite[current_node] = 1;
+        } //est un terminal
         
     }
     
@@ -98,7 +100,8 @@ int isInTrie(Trie trie, unsigned char *w){
     
 }
 //fonction qui construit un trie pour les prefix
-Trie trie_pref(unsigned char *w,int maxNode){
+Trie trie_pref(unsigned char *w){
+    int maxNode  = strlen((char *)w)+1;
     Trie tr =  createTrie(maxNode);
     insertInTrie(tr,w);
     for (int i = 0; i < tr->nextNode; i++)
@@ -111,9 +114,12 @@ Trie trie_pref(unsigned char *w,int maxNode){
     
 }
 
-Trie trie_suff(unsigned char *w,int maxNode){
-    Trie tr =  createTrie(maxNode);
+Trie trie_suff(unsigned char *w){
     int n = strlen((char *)w);
+     int maxNode  = n+1;//taille du mot +1
+    Trie tr =  createTrie(maxNode);
+     
+    
     for (int i = 0; i < n; i++)
     {
         insertInTrie(tr,w+i);
@@ -121,8 +127,5 @@ Trie trie_suff(unsigned char *w,int maxNode){
     }
     return tr;
 }
-// fonction de hachage retourne un entier
-// int hashFunc(int etat,unsigned char caractere){
 
-// }
 

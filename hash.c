@@ -13,10 +13,12 @@
 
 int main() {
 
-    unsigned char *w = (unsigned char *)"ab" ;
+    unsigned char *w = (unsigned char *)"absdasd" ;
+    unsigned char *w1 = (unsigned char *)"absdasd" ;
     Trie tr = createTrie(8);
     insertInTrie(tr,w);
-    printf("%d",tr->nextNode);
+    printf("%d",isInTrie(tr,w1));
+    
 
 
     
@@ -45,7 +47,7 @@ Trie createTrie(int maxNode){
     }
 
     // Initialiser chaque élément de `transition` à NULL
-    for (int i = 0; i < maxNode; i++) {
+    for (int i = 0; i < TABLE_SIZE; i++) {
         tr->transition[i] = NULL;
     }
     
@@ -70,7 +72,37 @@ void insertInTrie(Trie trie, unsigned char *w){
             currentNode = trie->nextNode;
             trie->nextNode = trie->nextNode + 1;
             trie->transition[hashcode] = newTrans;
+        }else{
+            List point = trie->transition[hashcode];
+            while (point != NULL)
+            {
+                if (point->startNode == currentNode && point->letter == w[i])
+                {
+                    currentNode = point->targetNode;
+                    break;
+                }
+                point=point->next;
+                /* code */
+            }
+            // si y'a pas de transition avec la meme lettre 
+            if (point == NULL)
+            {
+                 List newTrans = malloc(sizeof(struct _list));
+            newTrans->startNode = currentNode;
+            newTrans->letter = w[i];
+            newTrans->targetNode = trie->nextNode;
+            currentNode = trie->nextNode;
+            trie->nextNode = trie->nextNode + 1;
+            // inserer au debut
+            newTrans->next = trie->transition[hashcode];
+            trie->transition[hashcode] = newTrans;
+                //creation d'une transition
+                // fonction pour inserer en debut
+            }
+            
+            
         }
+
         
     }
     trie->finite[currentNode] = 1;
@@ -78,68 +110,43 @@ void insertInTrie(Trie trie, unsigned char *w){
     
 }
 
-/* void insertInTrie(Trie trie, unsigned char *w){
-    int n = strlen((char *)w);
-    int current_node = 0; // ne node courant
-    int hashcode ; // va contenir le resultat de la fonction de hachage
-    int lastNode =  trie[TABLE_SIZE].targetNode ; // recupere le dernier node qui est stocké sur la derniere case 
-    for (int i = 0; i < n; i++)
-    {
-        hashcode = (hash_function(w[i],current_node));
-        if(trie[hashcode].startNode == -1){
-            trie[hashcode].startNode = current_node;
-            
-            trie[hashcode].letter = w[i];
-            trie[hashcode].next = NULL;
-            
-            if (i == n-1)
+int isInTrie(Trie trie, unsigned char *w){
+int wordLength = strlen((char *)w);
+    int i = 0;
+    int current_node = 0;
+    int hashcode;
+    while(i<wordLength){
+        hashcode = hash_function(w[i],current_node);
+        if (trie->transition[hashcode]== NULL)
+        {
+            return 1; // 1 -> false & 0 -> true
+            /* code */
+        }else{
+             List point = trie->transition[hashcode];
+            while (point != NULL)
             {
-                
-                trie[hashcode].targetNode = -1 ; // pour determiner si cet etat est terminal
-                
-            }else{
-                trie[hashcode].targetNode = lastNode ;
-                current_node = lastNode;
-                lastNode+=1;
-            }
-            
-
-        }else {
-            List pnt ;
-            List last = NULL;
-            pnt = trie+hashcode;
-            while(pnt != NULL){
-                if(pnt->startNode==current_node && pnt->letter == w[i] ){
-                   current_node = pnt->targetNode;
-                   break; // sortir de la boucle 
+                if (point->startNode == current_node && point->letter == w[i])
+                {
+                    current_node = point->targetNode;
+                    break;
                 }
-                last = pnt ; // sauvegarder la valeur precedante
-                pnt = pnt->next;
-            }
-            if(pnt == NULL){
-                // creation d'une nouvelle transition
-                List new = malloc(sizeof(struct _list));
-                new->startNode = current_node;
-                new->letter = w[i];
-                 new->next = NULL;
-                if(i == n -1){new->targetNode = -1;   }
-                else{       
-                new->targetNode = lastNode;
-                last->next = new ;
-                current_node = lastNode;
-                lastNode++;
-               
-
-                //enfiler la nouvelle transition en fin 
-                }
+                point=point->next;
+                /* code */
             }
         }
-        trie[TABLE_SIZE].targetNode = lastNode;
+        i++;
         
     }
-    
+    if (trie->finite[current_node]==0)
+    {
+        return 1;
+        /* code */
+    }
+    return 0 ;
 
-}*/
+}
+
+
 
 unsigned int hash_function(char c, int num) {
     unsigned int hash = 0;
@@ -156,62 +163,6 @@ unsigned int hash_function(char c, int num) {
     return hash;
 }
 
-// fonction pour savoir si un mot appartien au trie ou pas
-/* int isInTrie(List trie, unsigned char *w){
-    int N = strlen((char *)w);
-    int i = 0;
-    int current_node = 0;
-    int hash;
-    while(i<N){
-        hash = hash_function(w[i],current_node);
-        // parcourir pour chercher les transition
-        List pnt = &trie[hash];
-        //parcourir 
-        while(pnt != NULL){
-            if(pnt->startNode == -1){
-                return 0;
-            }
-            if(pnt->startNode == current_node && pnt->letter ==w[i]){
-                current_node = pnt->targetNode;
-                break;
-            }
-            pnt = pnt->next;
-        }
-        if (pnt == NULL)
-        {
-            return 0 ; // mot non trouvé
-            
-        }
-        i++;
-
-        if(current_node == -1){
-            return 1;
-        }
-        
-
-    }
-    return 0;
-}*/
-/*int isInTrie(List trie, unsigned char *word) {
-    int wordLength = strlen((char *)word);
-    int currentNode = 0;
-
-    for (int currentIndex = 0; currentIndex < wordLength; currentIndex++) {
-        int hashCode = hash_function(word[currentIndex], currentNode);
-        List currentTransition = findTransition(&trie[hashCode], currentNode, word[currentIndex]);
-
-        // Si aucune transition trouvée, mot non trouvé
-        if (currentTransition == NULL) {
-            return 0; // Mot non trouvé
-        }
-
-        currentNode = currentTransition->targetNode; // Mettre à jour le nœud courant
-    }
-
-    // Vérifier si le nœud courant est terminal
-    return (currentNode == -1) ? 1 : 0; // Mot trouvé ou non
-}*/
-
 int isTransitionValid(List transition, int currentNode, unsigned char letter) {
     return transition->startNode == currentNode && transition->letter == letter;
 }
@@ -226,6 +177,16 @@ List findTransition(List transitions, int currentNode, unsigned char letter) {
     return NULL; // Aucune transition trouvée
 }
 
+// fonction pour creer une nouvelle transition
+
+List createNewTransition(int startNode, unsigned char letter, int targetNode) {
+    List newTrans = malloc(sizeof(struct _list));
+    newTrans->startNode = startNode;
+    newTrans->letter = letter;
+    newTrans->targetNode = targetNode;
+    newTrans->next = NULL;
+    return newTrans;
+}
 
 
 
